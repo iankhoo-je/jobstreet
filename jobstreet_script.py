@@ -6,10 +6,7 @@ import re
 import pandas as pd
 import time
 from pandas import ExcelWriter 
-from tkinter import *
-import threading 
 from datetime import datetime
-import sys
 import sqlite3
 
 
