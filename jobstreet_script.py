@@ -23,9 +23,11 @@ def general():
 
     conn = sqlite3.connect(db_file_path)
     c = conn.cursor()
-    c.execute(f'''CREATE TABLE {db_table}
-            (role TEXT, company TEXT, location TEXT, area TEXT, salary TEXT, years TEXT, 
-            keywords TEXT, description TEXT, date TEXT) ''')
+    # c.execute(f'''CREATE TABLE {db_table}
+    #         (role TEXT, company TEXT, location TEXT, area TEXT, salary TEXT, years TEXT, 
+    #         keywords TEXT, jobdescription TEXT, date TEXT, UNIQUE(company,jobdescription)) ''')
+
+ 
 
     regex_clear_html = re.compile('<.*?>') 
     base_url = 'https://www.jobstreet.com.sg/'
@@ -42,7 +44,7 @@ def general():
 
     date_today = datetime.now()
     page_number = int(page_input) + 1
-    print(f'Querying for {job_query} jobs in {location_query}, Searching through {page_input} pages...')
+    print(f'Querying for {job_query} jobs in {location_query}, Searching through {page_input} page(s)...')
     search_all_pages = [(search_url + str(x)+"/?sort=createdAt") for x in range(1,page_number)]
 
     keywords = ['python','mechanical','scripting','Lean Six Sigma','entry','Masters','Mechanical Engineering', 'software','communication', 'CAD', 'Minitab','programming', 'excel','powerpoint', '1 year','fresh']
@@ -163,31 +165,27 @@ def general():
         else:
             data['Area'].append('No location shown')
 
-
         company_role= role_lst[idx]
         company_name=company_lst[idx]
         location=location_lst[idx]
         print(description)
-        c.execute(f'''SELECT description FROM {db_table} WHERE description=?''',
-                        (description))
+        c.execute(f'''SELECT jobdescription FROM {db_table} WHERE jobdescription=?''',
+                        (description,))
        
-        result = c.fetchone()
+        fetch_result = c.fetchall()
         
-        if result:
+        if fetch_result:
             print("FULLY UPDATED")
             break
 
-        if row_count == 0:
-            c.execute(f"INSERT INTO {db_table} VALUES (:role,:company,:location,:area,:salary,:years,:keywords,:description,:date)", 
+        else:
+            c.execute(f"INSERT INTO {db_table} VALUES (:role,:company,:location,:area,:salary,:years,:keywords,:jobdescription,:date)", 
             {'role':company_role,'company':company_name,'location':location,'area':data['Area'][idx],'salary':data['Salary'][idx], 'years':data['Years of Experience'][idx],
-                    'keywords':data['Keywords Found'][idx],'description':data['Job Description'][idx],'date':data['Date Posted'][idx]})
+                    'keywords':data['Keywords Found'][idx],'jobdescription':data['Job Description'][idx],'date':data['Date Posted'][idx]})
             
             conn.commit()
-        else:
-            print("FULLY UPDATED")
-            break
-
-            
+   
+        
     c.execute(f"SELECT COUNT(*) FROM {db_table}")
     result = c.fetchone()[0]
     print(result)
