@@ -7,6 +7,7 @@ import streamlit as st
 # from streamlit_tags import st_tags, st_tags_sidebar
 
 
+
 database_file = 'jobss'
 
 conn = sqlite3.connect(f'C:/Users/Ian/project_jobstreet/{database_file}.db')
@@ -99,7 +100,7 @@ skills_selections = []
 # data_vis_dict = {'Tool':['Power BI','Tableau','Excel','Plotly'],'Results':[]}
 
 
-skills_lst = [{'Language':['Python','Javascript','Java','MATLAB','Ruby','PHP','Perl','Swift','R language'], 'Results':[]}, 
+skills_lst = [{'Programming Languages':['Python','Javascript','Java','MATLAB','Ruby','PHP','Perl','Swift','R language'], 'Results':[]}, 
                 {'Technology':['SQL','Database','MongoDB','NoSQL','Postgres','Sqlite3','Mysql'], 'Results':[]},
                 {'Cloud Technologies':['AWS','Cloud','Azure'], 'Results':[]},
                 {'Machine Learning':['Jupyter','Pandas','Tensorflow','Keras','Python','Machine Learning','Scikit'], 'Results':[]},
@@ -116,8 +117,9 @@ for skill_dict in skills_lst:
         skill_dict['Results'].append(total)
 
 
-chart_col_1, chart_col_2 = st.columns((1,3))
+chart_col_1, chart_col_2 = st.columns((0.5,2))
 with chart_col_1:
+    st.title('')
     st.markdown('Choose skill/language(s) most desired by companies.')
     skill_select = st.selectbox('Select a skill', skills_selections, key = 'selection_plot')
 
@@ -128,7 +130,7 @@ with chart_col_2:
                     index,
                     x =  skill_select,
                     y = 'Results',
-                    title= 'Most Used Software Technologies',
+                    title= f'Frequency of {skill_select.upper()} keywords in job postings',
                     orientation = 'v',
                     template ='plotly_white'
                 )
@@ -136,104 +138,10 @@ with chart_col_2:
                 
             
 
+with open('C:/Users/Ian/project_jobstreet/streamlit_csv.xlsx', 'rb') as my_file:
+    st.download_button(label = 'Download excel file (add emoji)', 
+            data = my_file, file_name = 'jobs.xlsx', mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') 
     
-
-
-
-
-
-
-# for idx in language_dict['Language']:
-#     total = len(df_selection.loc[df_selection['jobdescription'].str.contains(f'{idx.lower()}', flags=re.I,regex=True)])
-#     language_dict['Results'].append(total)
-# for idx in database_dict['Technology']:
-#     total = len(df_selection.loc[df_selection['jobdescription'].str.contains(f'{idx.lower()}', flags=re.I,regex=True)])
-#     database_dict['Results'].append(total)
-# for idx in cloud_dict['Cloud']:
-#     total = len(df_selection.loc[df_selection['jobdescription'].str.contains(f'{idx.lower()}', flags=re.I,regex=True)])
-#     cloud_dict['Results'].append(total)
-# for idx in ml_dict['ML']:
-#     total = len(df_selection.loc[df_selection['jobdescription'].str.contains(f'{idx.lower()}', flags=re.I,regex=True)])
-#     ml_dict['Results'].append(total)
-# for idx in data_science_dict['DS']:
-#     total = len(df_selection.loc[df_selection['jobdescription'].str.contains(f'{idx.lower()}', flags=re.I,regex=True)])
-#     data_science_dict['Results'].append(total)
-
-
-# language_bar_chart = px.bar(
-#     language_dict,
-#     x =  'Language',
-#     y = 'Results',
-#     title= 'Most Used Software Technologies',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-# database_bar_chart = px.bar(
-#     database_dict,
-#     x =  'Technology',
-#     y = 'Results',
-#     title= 'Most Used Data Visualisation Tools',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-# cloud_bar_chart = px.bar(
-#     cloud_dict,
-#     x =  'Cloud',
-#     y = 'Results',
-#     title= 'Most Used Cloud Softwares',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-# ml_bar_chart = px.bar(
-#     ml_dict,
-#     x =  'ML',
-#     y = 'Results',
-#     title= 'Most Used Machine Learning Tools',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-# data_science_bar_chart = px.bar(
-#     data_science_dict,
-#     x =  'DS',
-#     y = 'Results',
-#     title= 'Most Used Data Science Tools',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-
-
-# st.plotly_chart(language_bar_chart)
-# st.plotly_chart(database_bar_chart)
-# st.plotly_chart(cloud_bar_chart)
-# st.plotly_chart(ml_bar_chart)
-# st.plotly_chart(data_science_bar_chart)
-
-
-
-
-
-
-
-
-
-
-
-
-# dict = {'Language':['Python','Java','C++','Excel'],'Amount':[3,6,9,10]}
-# df_2 = pd.DataFrame(data=dict)
-
-
-
-# chart = px.bar(
-#     df_2,
-#     x =  'Language',
-#     y = 'Amount',
-#     orientation = 'v',
-#     template ='plotly_white'
-# )
-
-
-
 
 
 st.markdown('---')
@@ -241,4 +149,3 @@ st.markdown('---')
 
 
 
-# st.dataframe(df_selection)
