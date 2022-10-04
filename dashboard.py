@@ -4,16 +4,18 @@ import streamlit as st
 import pandas as pd
 import re
 import streamlit as st
+
+
 # from streamlit_tags import st_tags, st_tags_sidebar
 
 
+db_file_path = 'C:/Users/Ian/project_jobstreet/software_jobs.db'
+db_table = 'software_jobs'
 
-database_file = 'jobss'
-
-conn = sqlite3.connect(f'C:/Users/Ian/project_jobstreet/{database_file}.db')
+conn = sqlite3.connect(db_file_path)
 c = conn.cursor()
 
-df = pd.read_sql_query(f"SELECT * FROM jobss", conn)
+df = pd.read_sql_query(f"SELECT * FROM {db_table}", conn)
 
 
 st.set_page_config(page_title='Jobstreet Search',
@@ -40,13 +42,7 @@ df_selection = df.query(
     'location == @location & years == @years'
 )
 
-# keyword = st_tags_sidebar(label='# Enter Keywords:',
-#                         text='Press enter to add more',
-#                         value=['Zero', 'One', 'Two'],
-#                         suggestions=['five', 'six', 'seven', 'eight', 'nine', 'three', 'eleven', 'ten', 'four'],
-#                         key="afrfae")
-
-# st.sidebar.write((keyword))
+df_count = len(df_selection.index)
 
 
 # ---------------- Main Page ---------------
@@ -57,7 +53,7 @@ st.markdown('##')
 data_col_1, data_col_2, data_col_3 = st.columns((.2, 7.1, .2))
 with data_col_2:
     st.markdown("")
-    see_data = st.expander('Click here to see all job postings')
+    see_data = st.expander(f'Click here to see all job postings ({df_count})')
     with see_data:
         st.dataframe(data=df_selection.reset_index(drop=True))
 st.text('')
@@ -70,7 +66,8 @@ max_comp_lst = max_postings.index.tolist()
 max_comp_ind_lst = max_postings.tolist()
 
 ######################### Companies with Most Job Postings #############################
-st.header(f'Top {filter_number} Companies with the Most Job Postings')
+
+st.header(f'Top {filter_number} Companies with the Most Postings (out of {df_count} ads)')
 column1, column2 = st.columns((3,3))
 with column1:
     for i in range(filter_number):
@@ -87,18 +84,7 @@ with title_col1:
     st.subheader('Skills Chart for Job Postings')
 
 
-
-skills_selections = []
-
 # ------------------- Bar Chart-------------------------------
-# language_dict = {'Language':['Python','Javascript','Java','MATLAB','Ruby','PHP','Perl','Swift','R language'], 'Results':[]}
-# database_dict = {'Technology':['SQL','Database','MongoDB','NoSQL','Postgres','Sqlite3','Mysql'], 'Results':[]}
-# cloud_dict = {'Cloud':['AWS','Cloud','Azure'], 'Results':[]}
-# ml_dict = {'ML':['Jupyter','pandas','tensorflow','keras','python','Machine Learning','scikit'], 'Results':[]}
-# data_science_dict = {'DS':['Python','REST API','API','Git','Linux','Jupyter'], 'Results':[]}
-# spoken_lang_dict = {'SL':['English','Chinese','Malay','French'], 'Results':[]}
-# data_vis_dict = {'Tool':['Power BI','Tableau','Excel','Plotly'],'Results':[]}
-
 
 skills_lst = [{'Programming Languages':['Python','Javascript','Java','MATLAB','Ruby','PHP','Perl','Swift','R language'], 'Results':[]}, 
                 {'Technology':['SQL','Database','MongoDB','NoSQL','Postgres','Sqlite3','Mysql'], 'Results':[]},
@@ -107,7 +93,7 @@ skills_lst = [{'Programming Languages':['Python','Javascript','Java','MATLAB','R
                 {'Data Science':['Python','REST API','API','Git','Linux','Jupyter'], 'Results':[]},
                 {'Spoken Languages':['English','Chinese','Malay','French', 'Cantonese', 'Mandarin', 'Hokkien'], 'Results':[]},]
 
-
+skills_selections = []
 
 for skill_dict in skills_lst:
     skill = list(skill_dict.keys())[0]
@@ -130,7 +116,7 @@ with chart_col_2:
                     index,
                     x =  skill_select,
                     y = 'Results',
-                    title= f'Frequency of {skill_select.upper()} keywords in job postings',
+                    title= f'Frequency of {skill_select} keywords in job postings',
                     orientation = 'v',
                     template ='plotly_white'
                 )
@@ -138,7 +124,7 @@ with chart_col_2:
                 
             
 
-with open('C:/Users/Ian/project_jobstreet/streamlit_csv.xlsx', 'rb') as my_file:
+with open('C:/Users/Ian/project_jobstreet/software engineer_singapore_script.xlsx', 'rb') as my_file:
     st.download_button(label = 'Download excel file (add emoji)', 
             data = my_file, file_name = 'jobs.xlsx', mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') 
     
