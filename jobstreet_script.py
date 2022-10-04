@@ -13,19 +13,19 @@ import sqlite3
 def general():
     ###########################################################################
     # User Configurable Variables
-    job_query = 'software engineering'
+    job_query = 'software engineer'
     location_query = 'singapore'
-    page_input = 1
-    xlsx_file_path = f'C:/Users/Ian/Documents/{job_query}_{location_query}_script.xlsx'
-    db_table = 'jobs'
+    page_input = 4  
+    xlsx_file_path = f'C:/Users/Ian/project_jobstreet/{job_query}_{location_query}_script.xlsx'
+    db_table = 'software_jobs'
     db_file_path = f'C:/Users/Ian/project_jobstreet/{db_table}.db'
     ############################################################################
 
     conn = sqlite3.connect(db_file_path)
     c = conn.cursor()
-    # c.execute(f'''CREATE TABLE {db_table}
-    #         (role TEXT, company TEXT, location TEXT, area TEXT, salary TEXT, years TEXT, 
-    #         keywords TEXT, jobdescription TEXT, date TEXT, UNIQUE(company,jobdescription)) ''')
+    c.execute(f'''CREATE TABLE {db_table}
+            (role TEXT, company TEXT, location TEXT, area TEXT, salary TEXT, years TEXT, 
+            keywords TEXT, jobdescription TEXT, date TEXT, UNIQUE(company,jobdescription)) ''')
 
  
 
@@ -176,7 +176,7 @@ def general():
         
         if fetch_result:
             print("FULLY UPDATED")
-            break
+            
 
         else:
             c.execute(f"INSERT INTO {db_table} VALUES (:role,:company,:location,:area,:salary,:years,:keywords,:jobdescription,:date)", 
@@ -216,3 +216,5 @@ def general():
     writer.save() 
     
 general()
+
+def __
